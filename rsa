@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys
-
+from math import gcd 
 
 
 def primality_test(p):
@@ -21,19 +21,36 @@ def primality_test(p):
 
     """
     pass
-def generate_keys(p, q):
-    pass 
-def phi(pq):
-    pass 
+def generate_public(p, q):
+    return p*q
+def unknown_phi(n):
+    """ Referenced this StackOverflow post to write this code: https://stackoverflow.com/questions/18114138/computing-eulers-totient-function"""
+    # this is the slow way where ew don't actually know if n is prime
+    
+def phi(p):
+    # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
+    # to calculate this using the gcd function from the math library.
+    return p-1
 def encrypt(plaintext, key):
-    pass 
-def retrieve_private_key(phi):
-    pass 
-def decrypt(plaintext, key):
+    cipher = ""
+    for letter in plaintext:
+        print("this is the letter: ", letter)
+        cipher += chr((ord(letter)**key) % 127)
+        print("this is cipher atp: ", cipher)
+    return cipher
+def retrieve_private_key(p, q):
+    pass
+def decrypt(cipher, key):
     pass
 
 def rsa(p, q, plaintext):
-    pass
+    #primality_test(p, q) implement this later!
+    public_key = generate_public(p, q)
+    cipher = encrypt(plaintext, public_key)
+    print("This is your encrypted message: ", cipher)
+    #private_key = retrieve_private_key(p, q)
+    #plain = decrypt(cipher, private_key)
+    #print("This is your original message: ", plain)
 
 #TODO: 
 # 1. Implement basic RSA using user input for primes (foundation implementation) 
@@ -50,8 +67,10 @@ def main():
     if len(sys.argv) != 4:
         print("Please use format: ./rsa prime1 prime2 'plaintext goes here' separated by spaces.")
     else:
-        p1 = sys.argv[1]
-        p2 = sys.argv[2]
+        p1 = int(sys.argv[1])
+        p2 = int(sys.argv[2])
         plaintext = sys.argv[3]
+        
+        return rsa(p1, p2, plaintext)
 if __name__ == "__main__":
     main()
