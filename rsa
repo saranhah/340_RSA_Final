@@ -1,0 +1,57 @@
+#!/usr/bin/python3
+import sys
+
+
+
+def primality_test(p):
+    """
+        This function will eventually implemented to run the some sort of primality test on the two primes provided. It will return False if it is definitive
+        that p is a composite number. It will return True if it passes the test, but it is important to note that this does not necessarily
+        mean that p is prime (it could be a Carmichael number).
+        
+        From Wikipedia page on AKS: https://en.wikipedia.org/wiki/AKS_primality_test 
+        Input: integer n > 1.
+            Check if n is a perfect power: if n = ab for integers a > 1 and b > 1, then output composite.
+            Find the smallest r such that ordr(n) > (log2 n)2. If r and n are not coprime, then output composite.
+        For all 2 ≤ a ≤ min (r, n−1), check that a does not divide n: If a|n for some 2 ≤ a ≤ min (r, n−1), then output composite.
+        If n ≤ r, then output prime.
+        For a = 1 to ⌊𝜑(𝑟)log2(𝑛) do
+            if (X+a)n ≠ Xn+a (mod Xr − 1,n), then output composite;
+        Output prime.
+
+    """
+    pass
+def generate_keys(p, q):
+    pass 
+def phi(pq):
+    pass 
+def encrypt(plaintext, key):
+    pass 
+def retrieve_private_key(phi):
+    pass 
+def decrypt(plaintext, key):
+    pass
+
+def rsa(p, q, plaintext):
+    pass
+
+#TODO: 
+# 1. Implement basic RSA using user input for primes (foundation implementation) 
+# 2. set this up with PBT/have PBT generate primes. first assume that all inputs are prime numbers. 
+#    (oracle should at this point just be checking that the decrypted message is the same as the plaintext that's been passed in)
+# 3. find way for RSA to "check" for primes (using the miller-rabin test maybe)
+# 4. Update Oracle to also generate non-prime numbers to input into RSA. we want RSA to reject non-prime numbers in *most* cases
+# 5. Then update RSA to include digital signatures
+# 6. Alloy model (ask Alexa about what kind of Alloy model this should be)
+
+def main():
+    # read input from std in
+    # we expect input to have this order: p1 p2 plaintext (with one space in between them) when run from command line
+    if len(sys.argv) != 4:
+        print("Please use format: ./rsa prime1 prime2 'plaintext goes here' separated by spaces.")
+    else:
+        p1 = sys.argv[1]
+        p2 = sys.argv[2]
+        plaintext = sys.argv[3]
+if __name__ == "__main__":
+    main()
