@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 from math import gcd 
-
+import random
 
 def primality_test(p):
     """
@@ -22,21 +22,38 @@ def primality_test(p):
     """
     pass
 def generate_public(p, q):
-    return p*q
+    # we want to choose an e that is relatively prime to pq
+    # p and q are both primes. the only numbers that are not relatively prime to pq are p and q. so we can choose an e such that e is 
+    # somewhere in the range from 1 - pq such that e is not p or q. 
+    relative_prime = False
+    
+    while not relative_prime:
+        e = random.randint(2, p*q - 1)
+        if gcd(p*q, e) == 1:
+            relative_prime = True
+    print("this is e: ", e)
+    return e
+    
 def unknown_phi(n):
     """ Referenced this StackOverflow post to write this code: https://stackoverflow.com/questions/18114138/computing-eulers-totient-function"""
-    # this is the slow way where ew don't actually know if n is prime
+    # this is the slow way where we don't actually know if n is prime. do we need this? maybe not
+    pass 
     
 def phi(p):
     # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
     # to calculate this using the gcd function from the math library.
     return p-1
-def encrypt(plaintext, key):
+def encrypt(plaintext, key, mod):
+    # this is the equivalent of 
     cipher = ""
-    for letter in plaintext:
-        print("this is the letter: ", letter)
-        cipher += chr((ord(letter)**key) % 127)
-        print("this is cipher atp: ", cipher)
+    print("This is plaintext: ", plaintext)
+    print("this is type: ", type(plaintext))
+    for char in plaintext:
+        uni_code_val = pow(ord(char), key, mod)
+        print("this is char: ", chr(uni_code_val))
+        print("this is uni_code_val: ", uni_code_val)
+        cipher += chr(uni_code_val)
+        print("this is cipher at this point: ", cipher)
     return cipher
 def retrieve_private_key(p, q):
     pass
@@ -45,9 +62,11 @@ def decrypt(cipher, key):
 
 def rsa(p, q, plaintext):
     #primality_test(p, q) implement this later!
+    n = p*q
     public_key = generate_public(p, q)
-    cipher = encrypt(plaintext, public_key)
-    print("This is your encrypted message: ", cipher)
+    cipher = encrypt(plaintext, public_key, n)
+    print('cipher: ' , cipher)
+
     #private_key = retrieve_private_key(p, q)
     #plain = decrypt(cipher, private_key)
     #print("This is your original message: ", plain)
