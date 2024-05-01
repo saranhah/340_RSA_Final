@@ -29,8 +29,8 @@ def generate_public(p, q):
     
     while not relative_prime:
         e = random.randint(2, p*q - 1)
-        if gcd(p*q, e) == 1:
-            relative_prime = True
+        if gcd(e, p*q) == 1:
+            relative_prime = True # we've found a possible e—continue
     print("this is e: ", e)
     return e
     
@@ -39,35 +39,69 @@ def unknown_phi(n):
     # this is the slow way where we don't actually know if n is prime. do we need this? maybe not
     pass 
     
+def euclid_extended(phi, key):
+    """ Use this to find the multiplicative inverse for a given phi of n and key e. Euclid's Extended Division Algorithm attempts to find
+    the values x and y such that ax + by = gcd(a, b). In this case, we care about the coefficient for a. This will tell us the multiplicative inverse.
+    I referenced this video to create this code: 
+    https://www.youtube.com/watch?v=kYasb426Yjk. 
+    """
+    # first run the euclidean algorithm, then keep track of old variables for backtracking
+    remainder = 0
+    x = 1
+    y = 0 # use this for backtracking coeff
+    x_prev = 0 # keep track of old variables
+    y_prev = 0
+    e = key
+    #d = 0
+    z = phi # this is the lhs of the equation
+    while remainder != 1:
+        x = z//e
+        remainder = (z - (e * x))
+        
+        
+        x_prev, x = x, x_prev - x * x
+        y_prev, y = y, y_prev - x * y
+        print("this is y: ", y)
+        print("this is y prev: ", y_prev)
+        
+        # now we have calculated remainder. now we just need to set variables for next iteration
+        z = e
+        e = remainder
+       
+    if y < 0: # case where it's neg 
+        return y + phi
+    else:
+        return y
+    
+    
+    pass 
 def phi(p):
     # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
     # to calculate this using the gcd function from the math library.
     return p-1
 def encrypt(plaintext, key, mod):
     # this is the equivalent of 
-    cipher = ""
-    print("This is plaintext: ", plaintext)
-    print("this is type: ", type(plaintext))
-    for char in plaintext:
-        uni_code_val = pow(ord(char), key, mod)
-        print("this is char: ", chr(uni_code_val))
-        print("this is uni_code_val: ", uni_code_val)
-        cipher += chr(uni_code_val)
-        print("this is cipher at this point: ", cipher)
-    return cipher
-def retrieve_private_key(p, q):
+    cipher = [pow(ord(char), key, mod) for char in plaintext]
+    return cipher # this returns is as an array of bytes in unicode format
+def retrieve_private_key(phi, key):
+    # using p and q: want to find some d > 0 such that de = 1 mod phi n 
+    # so we want to use euclid's extended division algorithm
+    # and then check if the result is negative. if it is negative, then add to n to get pos version d
     pass
+    
+    
 def decrypt(cipher, key):
     pass
 
 def rsa(p, q, plaintext):
     #primality_test(p, q) implement this later!
-    n = p*q
-    public_key = generate_public(p, q)
-    cipher = encrypt(plaintext, public_key, n)
-    print('cipher: ' , cipher)
-
-    #private_key = retrieve_private_key(p, q)
+    #n = p*q
+    #public_key = generate_public(p, q)
+    #cipher = encrypt(plaintext, public_key, n)
+    #print('cipher: ' , cipher)
+    #phi_n = phi(p) * phi(q)
+    #private_key = retrieve_private_key(phi_n, public_key)
+    pass
     #plain = decrypt(cipher, private_key)
     #print("This is your original message: ", plain)
 
@@ -89,7 +123,7 @@ def main():
         p1 = int(sys.argv[1])
         p2 = int(sys.argv[2])
         plaintext = sys.argv[3]
-        
-        return rsa(p1, p2, plaintext)
+        print(euclid_extended(24, 11))
+        #return rsa(p1, p2, plaintext)
 if __name__ == "__main__":
     main()
