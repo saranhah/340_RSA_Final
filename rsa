@@ -39,42 +39,45 @@ def unknown_phi(n):
     # this is the slow way where we don't actually know if n is prime. do we need this? maybe not
     pass 
     
-def euclid_extended(phi, key):
+def euclid_extended(e, phi):
     """ Use this to find the multiplicative inverse for a given phi of n and key e. Euclid's Extended Division Algorithm attempts to find
     the values x and y such that ax + by = gcd(a, b). In this case, we care about the coefficient for a. This will tell us the multiplicative inverse.
     I referenced this video to create this code: 
     https://www.youtube.com/watch?v=kYasb426Yjk. 
     """
     # first run the euclidean algorithm, then keep track of old variables for backtracking
-    remainder = 0
-    x = 1
-    y = 0 # use this for backtracking coeff
-    x_prev = 0 # keep track of old variables
-    y_prev = 0
-    e = key
-    #d = 0
-    z = phi # this is the lhs of the equation
-    while remainder != 1:
-        x = z//e
-        remainder = (z - (e * x))
-        
-        
-        x_prev, x = x, x_prev - x * x
-        y_prev, y = y, y_prev - x * y
-        print("this is y: ", y)
-        print("this is y prev: ", y_prev)
-        
-        # now we have calculated remainder. now we just need to set variables for next iteration
-        z = e
+    d = 0
+    x1 = 0
+    x2 = 1
+    y1 = 1
+    z = phi
+
+    while e > 0:
+        temp1 = z//e
+        print('this is temp1: ', temp1)
+        remainder = z - temp1 * e
+
+        z = e 
+
         e = remainder
+      
+        # store old variables by substituting in old vals
+        x = x2 - (temp1 * x1)
        
-    if y < 0: # case where it's neg 
-        return y + phi
+        y = d - (temp1 * y1)
+      
+        # preserve previous values
+        x2 = x1
+        x1 = x
+        d = y1
+        y1 = y
+
+    if z < 0:
+        return d + phi
     else:
-        return y
+        return d
     
     
-    pass 
 def phi(p):
     # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
     # to calculate this using the gcd function from the math library.
@@ -87,7 +90,7 @@ def retrieve_private_key(phi, key):
     # using p and q: want to find some d > 0 such that de = 1 mod phi n 
     # so we want to use euclid's extended division algorithm
     # and then check if the result is negative. if it is negative, then add to n to get pos version d
-    pass
+    return euclid_extended(key, phi)
     
     
 def decrypt(cipher, key):
@@ -123,7 +126,7 @@ def main():
         p1 = int(sys.argv[1])
         p2 = int(sys.argv[2])
         plaintext = sys.argv[3]
-        print(euclid_extended(24, 11))
+        print(euclid_extended(11, 24))
         #return rsa(p1, p2, plaintext)
 if __name__ == "__main__":
     main()
