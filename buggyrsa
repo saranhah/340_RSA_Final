@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+print(sys.path)
 from math import gcd 
 import random
 from sympy import isprime
@@ -19,43 +20,42 @@ def generate_public(phi_n):
     #print("exited e")
     return e
     
-def euclid_extended(key, phi):
+def euclid_extended(e, phi):
     """ Use this to find the multiplicative inverse for a given phi of n and key e. Euclid's Extended Division Algorithm attempts to find
     the values x and y such that ax + by = gcd(a, b). In this case, we care about the coefficient for a. This will tell us the multiplicative inverse.
     I referenced this video to create this code: 
     https://www.youtube.com/watch?v=kYasb426Yjk. 
     """
     # first run the euclidean algorithm, then keep track of old variables for backtracking
-    d = 0 # d is going to be the mult. inverse
+    d = 0
     x1 = 0
-   
-    x2 = 1 # this will act as the gcd on the lhs of the eq when we backtrack
-    coeff = 1 # eventual coeff that we want to return paired in front of the original e
-    
-    
-    lhs = phi 
-    
-    e = key 
-    
-    while e > 0: # do this until we've fully cycled through euclids
-        intdiv = lhs//e
-        remainder = lhs - intdiv * e
-        lhs = e 
+    x2 = 1
+    y1 = 1
+    z = phi
+
+    while e > 0:
+        intdiv = z//e
+        
+        remainder = z - intdiv * e
+
+        z = e 
+
         e = remainder
       
         # store old variables by substituting in old vals
         x = x2 - (intdiv * x1)
-        y = d - (intdiv * coeff)
+       
+        y = d - (intdiv * y1)
       
         # preserve previous values and implement the "backtracking" in euclid's extended algorithm
-        d = coeff
-        coeff = y
+        d = y1
+        y1 = y
         x2 = x1
         x1 = x
   
     
-    if d < 0: # neg case. we need multiplicative inverse to be positive (use phi that we used as input)
-        return phi + d
+    if d < 0: # neg case. we need multiplicative inverse to be positive
+        return d + phi
     else: # normal positive case
         return d
     
@@ -66,8 +66,19 @@ def phi(p):
     return p-1
 def encrypt(plaintext, key, mod):
     cipher = [pow(ord(char), key, mod) for char in plaintext]
+    cipher = []
+    cipher_letter = []
+    for letter in plaintext:
+        cipher.append(pow(ord(letter), key, mod))
+    print("this is the key: ", key)
+    print("this is the mod: ", mod)
+    for val in cipher:
+        print("this is val: ", val)
+        print("this is the key: ", key)
+        print("this is the mod: ", mod)
+        cipher_letter.append(chr(int(val)))
+    print("this is the encrypted message: ", ''.join(cipher_letter))
     return cipher # this returns is as an array of bytes in unicode format
-
 def retrieve_private_key(phi, key):
     # using p and q: want to find some d > 0 such that de = 1 mod phi n 
     # so we want to use euclid's extended division algorithm
@@ -77,16 +88,30 @@ def retrieve_private_key(phi, key):
     
 def decrypt(cipher, key, mod):
     # note that mod is pq 
+    #decrypt_vals = []
+    #text = []
+    #for letter in cipher:
+        #decrypt_vals.append(str(pow(letter, key, mod)))
     plain = [str(pow(char, key, mod)) for char in cipher]
+    #print("this is just ints in decrypt: ", decrypt_vals)
     text = [chr(int(char)) for char in plain]
+    #for val in decrypt_vals:
+        #text.append(chr(int(val)))
+    #print('this is plaintext after cipher: ', text)
     return text
-
 def rsa(p, q, plaintext):
+    #primality_test(p, q) implement this later!
     n = p*q
+    print('this is n: ', n)
     phi_n = phi(p) * phi(q)
     public_key = generate_public(phi_n)
+    print("this is the public key: ", public_key)
     cipher = encrypt(plaintext, public_key, n)
+    print('cipher: ' , cipher)
+    print("this is phi of n: ", phi_n)
+    
     private_key = retrieve_private_key(phi_n, public_key)
+    print("this is the private_key: ", private_key)
     plain = decrypt(cipher, private_key, n)
     print("This is your original message: ", ''.join(plain))
     
