@@ -21,17 +21,19 @@ def primality_test(p):
 
     """
     pass
-def generate_public(p, q):
+def generate_public(phi_n):
     # we want to choose an e that is relatively prime to pq
     # p and q are both primes. the only numbers that are not relatively prime to pq are p and q. so we can choose an e such that e is 
     # somewhere in the range from 1 - pq such that e is not p or q. 
     relative_prime = False
     
     while not relative_prime:
-        e = random.randint(2, p*q - 1)
-        if gcd(e, p*q) == 1:
+        print("entering relative prime for e test")
+        e = random.randint(2, phi_n) # randomly choose a number in between 2 and phi of n (we don't want to choose 1, that doesn't encrypt)
+        if gcd(e, phi_n) == 1:
             relative_prime = True # we've found a possible e—continue
-    print("this is e: ", e)
+    #print("this is e: ", e)
+    print("exited e")
     return e
     
 def unknown_phi(n):
@@ -54,7 +56,7 @@ def euclid_extended(e, phi):
 
     while e > 0:
         temp1 = z//e
-        print('this is temp1: ', temp1)
+        
         remainder = z - temp1 * e
 
         z = e 
@@ -71,20 +73,20 @@ def euclid_extended(e, phi):
         x1 = x
         d = y1
         y1 = y
-
-    if z < 0:
+    print("this is d before anything: ", d)
+    if z == 1:
         return d + phi
-    else:
-        return d
-    
     
 def phi(p):
     # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
-    # to calculate this using the gcd function from the math library.
+    # to calculate this using the gcd function from the math library. This just assumes that the input is prime
     return p-1
 def encrypt(plaintext, key, mod):
     # this is the equivalent of 
+    plain = [ord(char) for char in plaintext]
+    print("this is plaintext before: ", plain)
     cipher = [pow(ord(char), key, mod) for char in plaintext]
+    
     return cipher # this returns is as an array of bytes in unicode format
 def retrieve_private_key(phi, key):
     # using p and q: want to find some d > 0 such that de = 1 mod phi n 
@@ -93,20 +95,30 @@ def retrieve_private_key(phi, key):
     return euclid_extended(key, phi)
     
     
-def decrypt(cipher, key):
-    pass
-
+def decrypt(cipher, key, mod):
+    # note that mod is pq 
+    print("got to decrypt!, this is mod ", mod)
+    plain = [str(pow(char, key, mod)) for char in cipher]
+    print("this is just ints in decrypt: ", plain)
+    text = [chr(int(char)) for char in plain]
+    print('this is plaintext after cipher: ', text)
+    return text
 def rsa(p, q, plaintext):
     #primality_test(p, q) implement this later!
-    #n = p*q
-    #public_key = generate_public(p, q)
-    #cipher = encrypt(plaintext, public_key, n)
-    #print('cipher: ' , cipher)
-    #phi_n = phi(p) * phi(q)
-    #private_key = retrieve_private_key(phi_n, public_key)
-    pass
-    #plain = decrypt(cipher, private_key)
-    #print("This is your original message: ", plain)
+    n = p*q
+    print('this is n: ', n)
+    phi_n = phi(p) * phi(q)
+    public_key = generate_public(phi_n)
+    print("this is the public key: ", public_key)
+    cipher = encrypt(plaintext, public_key, n)
+    print('cipher: ' , cipher)
+    print("this is phi of n: ", phi_n)
+    
+    private_key = retrieve_private_key(phi_n, public_key)
+    print("this is the private_key: ", private_key)
+    plain = decrypt(cipher, private_key, n)
+    print("This is your original message: ", ''.join(plain))
+    
 
 #TODO: 
 # 1. Implement basic RSA using user input for primes (foundation implementation) 
@@ -126,7 +138,6 @@ def main():
         p1 = int(sys.argv[1])
         p2 = int(sys.argv[2])
         plaintext = sys.argv[3]
-        print(euclid_extended(11, 24))
-        #return rsa(p1, p2, plaintext)
+        return rsa(p1, p2, plaintext)
 if __name__ == "__main__":
     main()
