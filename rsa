@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import sys
+print(sys.path)
 from math import gcd 
 import random
+from sympy import isprime
 
 def primality_test(p):
     """
@@ -74,8 +76,11 @@ def euclid_extended(e, phi):
         d = y1
         y1 = y
     print("this is d before anything: ", d)
-    if z == 1:
+    if d < 0: # neg case. we need multiplicative inverse to be positive
         return d + phi
+    else: # normal positive case
+        return d
+    
     
 def phi(p):
     # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
@@ -135,9 +140,13 @@ def main():
     if len(sys.argv) != 4:
         print("Please use format: ./rsa prime1 prime2 'plaintext goes here' separated by spaces.")
     else:
+        # first check that inputs are correct
         p1 = int(sys.argv[1])
         p2 = int(sys.argv[2])
         plaintext = sys.argv[3]
-        return rsa(p1, p2, plaintext)
+        if (not isprime(p1) or not isprime(p2)): # case where inputs are not prime
+            raise ValueError("Please input only prime numbers!")
+        else:
+            return rsa(p1, p2, plaintext)
 if __name__ == "__main__":
     main()
