@@ -5,7 +5,15 @@ import sys
 import random
 
 def is_prime(n):
-    """Naive method to check if a number is prime."""
+    """
+    Check if a number is prime using a basic algorithm.
+    
+    Args:
+        n (int): The number to check for primality.
+        
+    Returns:
+        bool: True if n is a prime number, False otherwise.
+    """
     if n <= 1:
         return False
     if n <= 3:
@@ -20,25 +28,53 @@ def is_prime(n):
     return True
 
 def generate_prime(min_value, max_value):
-    """Generate a random prime number within a specified range."""
+    """
+    Generate a random prime number within a specified range.
+    
+    Args:
+        min_value (int): The minimum value in the range.
+        max_value (int): The maximum value in the range.
+        
+    Returns:
+        int: A prime number between min_value and max_value.
+    """
     while True:
         p = random.randint(min_value, max_value)
         if is_prime(p):
             return p
 
 def generate_non_prime(min_value, max_value):
-    """Generate a random non-prime number within a specified range."""
+    """
+    Generate a random non-prime number within a specified range.
+    
+    Args:
+        min_value (int): The minimum value in the range.
+        max_value (int): The maximum value in the range.
+        
+    Returns:
+        int: A non-prime number between min_value and max_value.
+    """
     while True:
         n = random.randint(min_value, max_value)
         if not is_prime(n):
             return n
 
 def generate_random_plaintext():
-    """Generate a random plaintext for testing."""
+    """
+    Generate a random plaintext string for testing.
+    
+    Returns:
+        str: A randomly generated string of lowercase letters.
+    """
     length = random.randint(1, 20)  # random length of the plaintext
     return ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(length))
 
 def main():
+    """
+    Main function to execute the RSA testing.
+    
+    Expects two command line arguments: the path to the RSA executable and the number of tests to perform.
+    """
     if len(sys.argv) != 3:
         print("Usage: test_rsa.py <rsa_executable_path> <num_tests>")
         sys.exit(1)
@@ -52,6 +88,7 @@ def main():
         q = generate_prime(1000, 10000)
         plaintext = generate_random_plaintext()
 
+        # Ensure p and q are not identical
         while p == q:
             p = generate_prime(1000, 10000)
 
