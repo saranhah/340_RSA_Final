@@ -1,0 +1,84 @@
+#!/usr/bin/python3
+
+import subprocess
+import sys
+import random
+
+def is_prime(n):
+    """Naive method to check if a number is prime."""
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while (i * i) <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def generate_prime(min_value, max_value):
+    """Generate a random prime number within a specified range."""
+    while True:
+        p = random.randint(min_value, max_value)
+        if is_prime(p):
+            return p
+
+def generate_non_prime(min_value, max_value):
+    """Generate a random non-prime number within a specified range."""
+    while True:
+        n = random.randint(min_value, max_value)
+        if not is_prime(n):
+            return n
+
+def generate_random_plaintext():
+    """Generate a random plaintext for testing."""
+    length = random.randint(1, 20)  # random length of the plaintext
+    return ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(length))
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: test_rsa.py <rsa_executable_path> <num_tests>")
+        sys.exit(1)
+
+    rsa_executable_path = sys.argv[1]
+    num_tests = int(sys.argv[2])
+    all_tests_passed = True
+
+    for _ in range(num_tests):
+        p = generate_prime(1000, 10000)
+        q = generate_prime(1000, 10000)
+        plaintext = generate_random_plaintext()
+
+        while p == q:
+            p = generate_prime(1000, 10000)
+
+        # Testing with prime input
+        command = [sys.executable, rsa_executable_path, str(p), str(q), plaintext]
+        result = subprocess.run(command, capture_output=True, text=True)
+        print(f"rsa {p} {q} {plaintext}")
+        print(result.stdout.strip())
+        if plaintext not in result.stdout.strip():
+            print("Test failed: Decrypted text does not match the original plaintext")
+            all_tests_passed = False
+
+        # Testing with non-prime input
+        non_prime = generate_non_prime(1000, 10000)
+        command = [sys.executable, rsa_executable_path, str(p), str(non_prime), plaintext]
+        result = subprocess.run(command, capture_output=True, text=True)
+        print(f"nonprime test: rsa {p} {non_prime} {plaintext}")
+        if result.returncode == 0:
+            print("Test failed: RSA did not exit with an error for non-prime inputs.")
+            all_tests_passed = False
+
+    if all_tests_passed:
+        print("All tests passed successfully!")
+        sys.exit(0)
+    else:
+        print("Some tests failed.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
