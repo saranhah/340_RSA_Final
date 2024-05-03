@@ -113,6 +113,6 @@ def main():
         if (not isprime(p1) or not isprime(p2)): # case where inputs are not prime
             raise ValueError("Please input only prime numbers!")
         else:
-            return rsa(p1, p2, plaintext)
+            rsa(p1, p2, plaintext)
 if __name__ == "__main__":
     main()
