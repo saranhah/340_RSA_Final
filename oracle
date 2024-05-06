@@ -100,6 +100,8 @@ def main():
         if plaintext not in result.stdout.strip():
             print("Test failed: Decrypted text does not match the original plaintext")
             all_tests_passed = False
+        else:
+            print("Decrypted text matches the original plaintext")
 
         # Testing with non-prime input
         non_prime = generate_non_prime(1000, 10000)
@@ -109,6 +111,8 @@ def main():
         if result.returncode == 0:
             print("Test failed: RSA did not exit with an error for non-prime inputs.")
             all_tests_passed = False
+        else:
+            print("RSA correctly exited with an error for non-prime inputs")
 
     if all_tests_passed:
         print("All tests passed successfully!")
