@@ -24,45 +24,49 @@ pip install sympy
 
 This command installs the sympy package, which includes functionality to check if numbers are prime—an essential part of generating keys for RSA encryption.
 
-Running the Project
+## Running the Project
 To run the RSA testing script, use the following command from your terminal:
 
-bash
-Copy code
+```bash
 python test_rsa.py <path_to_rsa_script> <number_of_tests>
+```
 Replace <path_to_rsa_script> with the path to your RSA implementation script (rsa.py) and <number_of_tests> with the number of tests you want to perform.
 
-Problem Statement
+## Problem Statement
 The general problem tackled by this project is testing the correctness and robustness of an RSA encryption/decryption implementation. Specifically, the tool checks if:
 
-The RSA algorithm correctly encrypts and decrypts given texts using prime numbers as keys.
-The algorithm appropriately handles errors when provided with non-prime numbers.
-Tradeoffs and Representation
-Tradeoffs
+1. The RSA algorithm correctly encrypts and decrypts given texts using prime numbers as keys.
+2. The algorithm appropriately handles errors when provided with non-prime numbers.
+
+## Tradeoffs and Representation
+### Tradeoffs
 The main tradeoff in choosing this testing representation was balancing complexity and thoroughness of the tests against the runtime and simplicity. Using naive primality testing and basic subprocess calls allows for easier understanding and debugging but may not scale well with larger numbers or more complex test cases.
 
-Alternative Approaches
+### Alternative Approaches
 Initially, more complex methods for generating primes and non-primes were considered, including using advanced libraries or external APIs. However, these were not as straightforward to implement and increased dependency, which could lead to issues in environments with restricted internet access or dependency conflicts.
 
-Assumptions and Scope
-Assumptions
+## Assumptions and Scope
+### Assumptions
 The RSA implementation script (rsa.py) is correctly placed in the specified path and is executable.
 The user environment has Python installed with necessary permissions to execute scripts.
-Limits
+### Limits
 The model assumes that input sizes (the range of numbers for primes and non-primes) are within reasonable limits that don't cause performance degradation.
 The script is not optimized for extremely large numbers which are typically used in real-world RSA applications.
-Evolution of Goals
-Changes from Proposal
+
+## Evolution of Goals
+### Changes from Proposal
 The original proposal anticipated using more sophisticated statistical models for error detection and correction. During development, it became clear that maintaining simplicity for easier troubleshooting and modification was more practical.
 
-Realizations
+### Realizations
 It was realized that some initially deemed complex tasks, like integrating subprocesses for command line testing, were more straightforward than expected, which streamlined testing significantly.
 
-Understanding the Model
+## Understanding the Model
 Each instance of the model (a test run) involves:
 
 Generating a pair of prime numbers and a plaintext.
 Running the RSA encryption and decryption using these primes.
 Verifying that the decrypted text matches the original plaintext.
 Additionally, testing the RSA implementation with non-prime numbers to ensure it fails as expected.
-This framework provides a comprehensive approach to validating the basic functionality of an RSA implementation and its error handling capabilities.
+
+
+This framework provides a comprehensive approach to validating the basic functionality of an RSA implementation and its error-handling capabilities.
