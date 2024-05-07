@@ -12,13 +12,17 @@ To run and test the RSA project, you will need Python 3 and certain Python packa
 
 1. **Python 3**: If you do not have Python installed, download and install it from [Python's official website](https://www.python.org/downloads/).
 
-2. **Python Packages**: You need the `subprocess` and `random` modules, which are part of the Python Standard Library, so no additional installation is necessary beyond Python itself.
+2. **Python Packages**: You need some modules that are part of the Python Standard Library, though you will have to install sympy.
 
 ### Installing Python Packages
 
-Although this project primarily uses Python's built-in libraries, it requires the `sympy` library for prime number validation:
+While the script uses some modules from the Python Standard Library (`sys`, `random`, and `math`), you also need to install the `sympy` library:
 
-```bash
+- **`sys`**: No installation required, as it's part of the Python Standard Library.
+- **`math`**: No installation required, as it's part of the Python Standard Library.
+- **`random`**: No installation required, as it's part of the Python Standard Library.
+- **`sympy`**:
+  ```bash
 pip install sympy
 ```
 
