@@ -1,6 +1,4 @@
-# 340_RSA_Final
-
-# RSA Encryption/Decryption Testing Tool
+# CS 340 RSA Encryption/Decryption PBT Project
 
 This project is focused on creating a robust Property-Based Testing (PBT) framework for an RSA encryption/decryption implementation. The tool tests whether the RSA algorithm correctly encrypts and decrypts text using prime number-based keys, and it verifies that the implementation properly handles errors when non-prime numbers are used as inputs.
 
