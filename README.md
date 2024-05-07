@@ -20,6 +20,7 @@ Although this project primarily uses Python's built-in libraries, it requires th
 
 ```bash
 pip install sympy
+```
 
 This command installs the sympy package, which includes functionality to check if numbers are prime—an essential part of generating keys for RSA encryption.
 
