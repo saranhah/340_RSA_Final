@@ -30,7 +30,7 @@ To run the RSA testing script, use the following command from your terminal:
 ```bash
 python test_rsa.py <path_to_rsa_script> <number_of_tests>
 ```
-Replace <path_to_rsa_script> with the path to your RSA implementation script (rsa.py) and <number_of_tests> with the number of tests you want to perform.
+Replace <path_to_rsa_script> with the path to your RSA implementation script (rsa) and <number_of_tests> with the number of tests you want to perform.
 
 ## Problem Statement
 The general problem tackled by this project is testing the correctness and robustness of an RSA encryption/decryption implementation. Specifically, the tool checks if:
