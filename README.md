@@ -22,7 +22,7 @@ While the script uses some modules from the Python Standard Library (`sys`, `ran
 - **`math`**: No installation required, as it's part of the Python Standard Library.
 - **`random`**: No installation required, as it's part of the Python Standard Library.
 - **`sympy`**:
-  ```bash
+```bash
 pip install sympy
 ```
 
