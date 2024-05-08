@@ -3,6 +3,7 @@ import sys
 from math import gcd 
 import random
 from sympy import isprime
+from egcd import egcd
 
 def generate_public(phi_n):
     # we want to choose an e that is relatively prime to pq
@@ -15,51 +16,9 @@ def generate_public(phi_n):
         e = random.randint(2, phi_n) # randomly choose a number in between 2 and phi of n (we don't want to choose 1, that doesn't encrypt)
         if gcd(e, phi_n) == 1:
             relative_prime = True # we've found a possible e—continue
-    #print("this is e: ", e)
-    #print("exited e")
     return e
     
-def euclid_extended(key, phi):
-    """ Use this to find the multiplicative inverse for a given phi of n and key e. Euclid's Extended Division Algorithm attempts to find
-    the values x and y such that ax + by = gcd(a, b). In this case, we care about the coefficient for a. This will tell us the multiplicative inverse.
-    I referenced this video to create this code: 
-    https://www.youtube.com/watch?v=kYasb426Yjk. 
-    """
-    # first run the euclidean algorithm, then keep track of old variables for backtracking
-    d = 0 # d is going to be the mult. inverse
-    x1 = 0
-   
-    x2 = 1 # this will act as the gcd on the lhs of the eq when we backtrack
-    coeff = 1 # eventual coeff that we want to return paired in front of the original e
-    
-    
-    lhs = phi 
-    
-    e = key 
-    
-    while e > 0: # do this until we've fully cycled through euclids
-        intdiv = lhs//e
-        remainder = lhs - intdiv * e
-        lhs = e 
-        e = remainder
-      
-        # store old variables by substituting in old vals
-        x = x2 - (intdiv * x1)
-        y = d - (intdiv * coeff)
-      
-        # preserve previous values and implement the "backtracking" in euclid's extended algorithm
-        d = coeff
-        coeff = y
-        x2 = x1
-        x1 = x
-  
-    
-    if d < 0: # neg case. we need multiplicative inverse to be positive (use phi that we used as input)
-        return phi + d
-    else: # normal positive case
-        return d
-    
-    
+
 def phi(p):
     # this uses the number theory principle and requires both p and q to be prime. This is *sort of* cheating. there's a much slower way 
     # to calculate this using the gcd function from the math library. This just assumes that the input is prime
@@ -69,10 +28,16 @@ def encrypt(plaintext, key, mod):
     return cipher # this returns is as an array of bytes in unicode format
 
 def retrieve_private_key(phi, key):
-    # using p and q: want to find some d > 0 such that de = 1 mod phi n 
-    # so we want to use euclid's extended division algorithm
-    # and then check if the result is negative. if it is negative, then add to n to get pos version d
-    return euclid_extended(key, phi)
+    """
+        On the inputs of integers phi and key, retrieve_public_key finds the inverse of key in mod phi by using an implmentation of 
+        Euclid's Extended Algorithm from the egcd library (see here https://pypi.org/project/egcd/). Ultimately, the private_key
+        is some integer d such that de is congruent to 1 mod phi. This function always returns the positive representation of this number.
+    """
+    tuple = egcd(key, phi)
+    private_key = tuple[1] # grab second value
+    if private_key < 0: # case where private key is negative (we want positive only!) 
+        private_key += phi
+    return private_key
     
     
 def decrypt(cipher, key, mod):
@@ -88,17 +53,9 @@ def rsa(p, q, plaintext):
     cipher = encrypt(plaintext, public_key, n)
     private_key = retrieve_private_key(phi_n, public_key)
     plain = decrypt(cipher, private_key, n)
-    print("This is your original message: ", "hiii")
+    print("This is your original message: ", plain)
     
 
-#TODO: 
-# 1. Implement basic RSA using user input for primes (foundation implementation) 
-# 2. set this up with PBT/have PBT generate primes. first assume that all inputs are prime numbers. 
-#    (oracle should at this point just be checking that the decrypted message is the same as the plaintext that's been passed in)
-# 3. find way for RSA to "check" for primes (using the miller-rabin test maybe)
-# 4. Update Oracle to also generate non-prime numbers to input into RSA. we want RSA to reject non-prime numbers in *most* cases
-# 5. Then update RSA to include digital signatures
-# 6. Alloy model (ask Alexa about what kind of Alloy model this should be)
 
 def main():
     # read input from std in
