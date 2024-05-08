@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 #
-# Code written by Sarah Hickey, Cynthia Wang, and Nikol Kovacevic for CS340 Spring 2024. 
+# Code written by Sarah Hickey, Cynthia Wang, and Nikol Kovacevic for CS340 Spring 2024. This is the buggy version that does *not* test for primality.
 # Last edited 8 May 2024
 #
 
@@ -90,6 +90,7 @@ def rsa(p, q, plaintext):
     # result
     print("This is your original message: ", ''.join(plain)) 
     
+    
 
 def main():
     # read input from std in
@@ -105,12 +106,9 @@ def main():
         p2 = int(sys.argv[2])
         plaintext = sys.argv[3]
         
-        if (not isprime(p1) or not isprime(p2)): # case where inputs are not prime
-            exit(1)
-    
-        else: # otherwise, proceed 
+        if isprime(p1) and isprime(p2):
             rsa(p1, p2, plaintext)
-            exit(0)
+        exit(0)
             
 if __name__ == "__main__":
     main()

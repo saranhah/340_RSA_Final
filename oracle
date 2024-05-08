@@ -108,6 +108,7 @@ def main():
         command = [sys.executable, rsa_executable_path, str(p), str(non_prime), plaintext]
         result = subprocess.run(command, capture_output=True, text=True)
         print(f"nonprime test: rsa {p} {non_prime} {plaintext}")
+        print("this is result return code: ", result.returncode)
         if result.returncode == 0:
             print("Test failed: RSA did not exit with an error for non-prime inputs.")
             all_tests_passed = False
